@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { listEmployees } from '../services/EmployeeService'
+import { deleteEmployee, listEmployees } from '../services/EmployeeService'
 import { useNavigate } from 'react-router'
 
 const Listofemployess = () => {
@@ -10,14 +10,30 @@ const navigator=useNavigate();
 
    const [employees,setEmployees]=useState([])
    useEffect(()=>{
-listEmployees().then((response)=>{
-    setEmployees(response.data);
-}).catch(error=>console.error(error));
+getallemployee();
    },[])
+   function getallemployee(){
+    listEmployees().then((response)=>{
+        setEmployees(response.data);
+    }).catch(error=>console.error(error));
+   }
 
 
    function addEmployee(){
     navigator('/addemployee')
+   }
+
+   function updateEmployee(id){
+    navigator(`/editemployee/${id}`)
+   }
+
+   function removeEmployee(id){
+    deleteEmployee(id).then((response)=>{
+
+    }).catch(error=>{
+        console.error(error);
+    })
+    getallemployee();
    }
   return (
     <div className='container'>
@@ -34,6 +50,7 @@ listEmployees().then((response)=>{
                     <th>FirstName</th>
                     <th>LastName</th>
                     <th>Email</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,6 +61,12 @@ listEmployees().then((response)=>{
                             <td>{employee.firstName}</td>
                             <td>{employee.lastName}</td>
                             <td>{employee.email}</td>
+                            <td>
+                                <button className='btn btn-info'
+                                onClick={()=>updateEmployee(employee.id)}>Update</button>
+                                 <button className='btn btn-danger mx-2'
+                                onClick={()=>removeEmployee(employee.id)}>Delete</button>
+                            </td>
 
                         
                         </tr>

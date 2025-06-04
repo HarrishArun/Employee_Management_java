@@ -1,18 +1,35 @@
 import React, { useState } from 'react';
-import { addEmployee } from '../services/EmployeeService';
-import { useNavigate } from 'react-router';
+import { addEmployee, getEmployee, updateEmployee } from '../services/EmployeeService';
+import { useNavigate, useParams } from 'react-router';
+import { useEffect } from 'react';
 
 const EmployeeComponent = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
+  const{id}=useParams();
+  
 
   const [errors, setErrors] = useState({
     firstName: '',
     lastName: '',
     email: '',
   });
+   useEffect(
+    ()=>{
+        if(id){
+            getEmployee(id).then((response)=>{
+                setFirstName(response.data.firstName);
+                setLastName(response.data.lastName);
+                setEmail(response.data.email);
+
+            }).catch(error=>{
+                console.error(error);
+            })
+        }
+    },[id]
+   );
 
   function validateform() {
     let valid = true;
@@ -51,28 +68,52 @@ const EmployeeComponent = () => {
     setEmail(e.target.value);
   }
 
-  function saveEmployee(e) {
+  function saveorupdateEmployee(e) {
     e.preventDefault();
 
-    if (validateform()) {
-      const employee = { firstName, lastName, email };
-      addEmployee(employee)
-        .then((response) => {
-          console.log(response.data);
-          navigate('/employees');
-        })
-        .catch((error) => {
-          console.error('Submission failed:', error);
-          alert('Something went wrong!');
-        });
+    if (validateform()) { 
+        
+         const employee = { firstName, lastName, email };
+   
+   
+        if(id){
+            updateEmployee(id,employee).then((response)=>{
+                console.log(response.data);
+                navigate('/employees')
+            }).catch(error=>{
+                console.error(error)
+                alert('Something went wrong!');
+            })
+        }
+        else{  addEmployee(employee)
+            .then((response) => {
+              console.log(response.data);
+              navigate('/employees');
+            })
+            .catch((error) => {
+              console.error('Submission failed:', error);
+              alert('Something went wrong!');
+            });}
+      
     }
   }
 
+  function pageTitle(){
+  
+    if(id){
+        return   <h1 className='text-xl font-semibold mb-4'>Update Employee</h1>
+    }
+    else{
+        return <h1 className='text-xl font-semibold mb-4'>Add Employee</h1>
+    }
+  }
   return (
     <div className='max-w-screen flex justify-center items-center py-2 my-4'>
       <div className='flex flex-col justify-start items-start border-2 border-neutral-200 px-10 py-6 rounded-2xl'>
 
-        <h1 className='text-xl font-semibold mb-4'>Add Employee</h1>
+        {
+            pageTitle()
+        }
 
         <label>First name:</label>
         <input
@@ -109,7 +150,7 @@ const EmployeeComponent = () => {
 
         <button
           className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-2xl mt-4'
-          onClick={saveEmployee}
+          onClick={saveorupdateEmployee}
         >
           Submit
         </button>
