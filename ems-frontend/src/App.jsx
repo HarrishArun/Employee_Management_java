@@ -5,6 +5,7 @@ import './App.css'
 import Listofemployess from './components/Listofemployess'
 import HeaderComponenet from './components/HeaderComponent'
 import {BrowserRouter,Routes,Route} from'react-router-dom'
+import EmployeeComponent from './components/EmployeeComponent'
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
      <Routes>
       <Route path='/' element={<Listofemployess/>}></Route>
       <Route path='/employees' element={<Listofemployess/>}></Route>
+      <Route path='/addemployee' element={<EmployeeComponent/>}></Route>
      </Routes>
      
       </BrowserRouter>

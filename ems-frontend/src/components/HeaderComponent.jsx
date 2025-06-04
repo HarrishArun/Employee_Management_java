@@ -6,7 +6,7 @@ const HeaderComponenet = () => {
 
         <header>
             <nav className='navbar navbar-dark bg-dark'>
-            <a className='navbar-brand '>EMS</a>
+            <a className='navbar-brand px-2'>EMS</a>
                 
             </nav>
         </header>
